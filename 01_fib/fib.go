@@ -9,9 +9,8 @@ import (
 var out io.Writer = os.Stdout
 
 func main() {
-	fmt.Fprintln(out, fib(7))
-	
-}
+	fmt.Fprint(out, fib(7))
+	}
 
 func fib(n int) int{
 	if n <=1 {
