@@ -4,28 +4,26 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 )
 
 var out io.Writer = os.Stdout
 
-func numeronyms(vals ...string) []string {
-	numeronyms := []string{}
-	for _, val := range vals {
-		numeronyms = append(numeronyms, generateNumeronym(val))
-	}
-	return numeronyms
-}
-
-func generateNumeronym(input string) string {
-	inputLen := len(input)
-	//minimum 4 chars are required
-	if inputLen <= 3 {
-		return input
-	}
-
-	return fmt.Sprintf("%c%d%c", input[0], inputLen-2, input[inputLen-1])
-}
-
 func main() {
 	fmt.Fprint(out, numeronyms("accessibility", "Kubernetes", "abc"))
+}
+
+func numeronyms(vals ...string) []string {
+	numeronyms := make([]string, len(vals))
+	for pos, value := range vals {
+		trimmedVal := strings.TrimSpace(value)
+		length := len(trimmedVal[])
+		fmt.Fprint(out, trimmedVal, "\n")
+		if length > 3 {
+			numeronyms[pos] = fmt.Sprintf("%c%d%c", trimmedVal[0], len(trimmedVal)-2, trimmedVal[length-1])
+		} else {
+			numeronyms[pos] = trimmedVal
+		}
+	}
+	return numeronyms
 }

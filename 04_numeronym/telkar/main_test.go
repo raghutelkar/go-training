@@ -7,15 +7,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var testMatrix = []struct {
-	input  []string
-	output []string
+var tests = []struct {
+	inputStrings []string
+	numeronyms   []string
 }{
-	{[]string{"abba", "accessibility", "Kubernetes", "abc"}, []string{"a2a", "a11y", "K8s", "abc"}},
-	{[]string{"abb a"}, []string{"a3a"}},
-	{[]string{""}, []string{""}}}
+	{[]string{}, []string{}},
+	{[]string{" "}, []string{""}},
+	{[]string{"Internationalization", "Localization", "Multilingualization", "accessibility",
+		"Canonicalization", "interoperability", "Personalization", "Virtualization"},
+		[]string{"I18n", "L10n", "M17n", "a11y", "C14n", "i14y", "P13n", "V12n"}},
+	{[]string{" Internationalization ", " Personalization "}, []string{"I18n", "P13n"}},
+	{[]string{"Accessibility Localization"}, []string{"A24n"}},
+	{[]string{" accessibility localization "}, []string{"a24n"}}}
 
-func TestMainOutput(t *testing.T) {
+func TestLettersMainOutput(t *testing.T) {
 	// Given
 	r := require.New(t)
 	var buf bytes.Buffer
@@ -25,16 +30,15 @@ func TestMainOutput(t *testing.T) {
 	main()
 
 	// Then
-	expected := `[a11y K8s abc]`
+	expected := "[a11y K8s abc]"
 	actual := buf.String()
 	r.Equalf(expected, actual, "Unexpected output in main()")
 }
 
-func TestLetters(t *testing.T) {
-	// Given
+func TestLettersMapAndSort(t *testing.T) {
 	r := require.New(t)
-	for _, testData := range testMatrix {
-		letters := numeronyms(testData.input...)
-		r.Equal(letters, testData.output)
+	for _, tt := range tests {
+		actual := numeronyms(tt.inputStrings...)
+		r.EqualValues(tt.numeronyms, actual)
 	}
 }
